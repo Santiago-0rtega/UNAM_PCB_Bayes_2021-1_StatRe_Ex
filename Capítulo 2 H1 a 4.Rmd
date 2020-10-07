@@ -1,0 +1,113 @@
+---
+title: "Capítulo 2: H1 a 4"
+output: html_notebook
+---
+
+```{r}
+library(MASS)
+detach()
+rm(list=ls()) 
+.rs.restartR()
+```
+
+  
+# 2H1
+
+```{r}
+#Probability that the second birth will be twins given that the first was twins
+
+#Prior probabilities of being either sp A or B
+p_A<-1/2 
+p_B<-1/2 
+
+sp.A<-0.1 #P(Twins|Sp=A)
+sp.B<-0.2 #P(Twins|Sp=B)
+
+#To estimate the probability of give birth to twins given the first birth were twins, we require to know P(twins) considering that we don't know the species.
+#P(S=A|twins)=P(Twins|Sp=A)/P(twins)
+#P(S=B|twins)=P(Twins|Sp=B)/P(twins)
+#P(twins)=P(Twins|Sp=A)P(A)+P(Twins|Sp=B)P(B)
+
+#Compute likelihood at each value 
+likelihood<-c(0.1,0.2)
+#Define prior
+prior<-c(1,1)
+#Product of likelihood and prior
+unst.posterior<-likelihood*prior
+
+#standardize posterior (i.e. sums to 1)
+posterior<-unst.posterior/sum(unst.posterior)
+posterior
+
+#Probability of next birth are twins
+sum(posterior*likelihood)
+
+```
+
+#2H2
+```{r}
+#Probability that the panda was of sp A given that it had twins in its first birth
+#P(Sp =A|Twins)=P(Twins|Sp=A)/P(Twins)
+#0.1*0.5/sum(0.1*0.5+0.2*0.5)
+posterior[1]
+
+```
+
+```{r}
+#Probability that panda is sp A given that the second birth was a singleton
+#P(Sp=A,Twins, Single)=P(Twins|Sp=A)*P(Single1Sp=A)*P(A)/P(Twins,Single)
+#P(Twins,Single)=P(Twins|Sp=A)*P(Single|Sp=A)*P(A)+P(Twins|Sp=B)*P(Single|Sp=B)*P(B)
+
+
+
+#P(Twins|Sp=A)*P(Single|Sp=A)*P(A)
+likelihoodn<-c(sp.A*(1-sp.A),sp.B*(1-sp.B))
+
+likelihoodn[1]
+likelihoodn[2]
+prior<-c(1,1)
+un.post<-likelihoodn*prior
+postn<-un.post/sum(un.post)
+postn[1]
+```
+#2H4.1
+```{r}
+#Probability that panda is sp A given a positive genetic test for A
+#P(Test=A|Sp=A)=0.80
+#P(Test=B|Sp=A)=0.20
+#P(Test=A|Sp=B)=0.35
+#P(Test=B|Sp=B))0.65
+
+
+#P(Sp=A|T=A)= P(T=A|Sp=A)*P(Sp=A)/P(A)
+likelihood_test<-c(0.80,1-0.65)
+prior<-c(1,1)
+un.lik<-likelihood_test*prior
+post.test.a<-un.lik/sum(un.lik)
+post.test.a[1]
+```
+#2H4.2
+```{r}
+# P(Sp=A|test=A,twins,single)=
+#               P(test=A|Sp= A)*
+#               P(twins|Sp= A)*
+#               P(single|Sp=A)*
+#               P(Sp=A)/
+#               P(test= A, twins, single)
+prior<-post.test.a
+unz.post<-prior*likelihood
+posterior_a_tw_s<-unz.post/sum(unz.post)
+posterior_a_tw_s[1]
+```
+
+
+
+
+
+
+
+
+
+
+
+
